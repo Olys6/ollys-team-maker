@@ -6,6 +6,9 @@ function App() {
   const [players, setPlayers] = useState([])
   const [name, setName] = useState("")
   const [numOfTeams, setNumOfTeams] = useState()
+  const [teams, setTeams] = useState([])
+
+  const teamsPerLine = Math.ceil(players.length / numOfTeams)
 
   const handleEnter = () => {
     setPlayers([...players, name.charAt(0).toUpperCase() + name.slice(1)])
@@ -23,7 +26,7 @@ function App() {
   }
 
   const makeTeams = () => {
-    let array = players
+    let array = [...players]
     for (var i = array.length - 1; i > 0; i--) {
 
       // Generate random number
@@ -34,15 +37,14 @@ function App() {
       array[j] = temp;
     }
 
+    
+
     const result = [] //we create it, then we'll fill it
 
     for(let i = 0; i < numOfTeams; i++) {
       result.push([])
     }
-
-    const teamsPerLine = Math.ceil(array.length / numOfTeams)
-    console.log("TEAMS PER LINE ->", teamsPerLine)
-
+    // console.log("TEAMS PER LINE ->", teamsPerLine)
     for (let line = 0; line < numOfTeams; line++) {
       for (let i = 0; i < teamsPerLine; i++) {
         const value = array[i + line * teamsPerLine]
@@ -50,13 +52,28 @@ function App() {
         result[line].push(value)
       }
     }
+    setTeams(result)
     console.log(result)
   }
 
+  const teamColours = ['red', "blue", "green", "yellow", "purple", "orange", "pink", "white"]
+  
   return (
     <div>
       <h1>Olly's Team Maker</h1>
-      <ul style={{ display: "flex", flexDirection: "column", gap: "1rem", listStyleType: "none" }}>
+      <div>
+        <ul style={{ fontSize: "30px", display: "flex", flexDirection: "column", gap: "1rem", listStyleType: "none" }}>
+          {teams.map((team, i) => (
+            <li key={i} style={{ color: teamColours[i] }}>
+            {/* {team.map((player) => (
+              <span>{player}, </span>
+            ))} */}
+              Team {teamColours[i].charAt(0).toUpperCase() + teamColours[i].slice(1)}: {team.join(", ")}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <ul style={{ display: "flex", flexDirection: "column", gap: "1rem", listStyleType: "none", padding: "0" }}>
         {players.map((player, num) => (
           <li key={num} value={player} style={{ display: "flex", justifyContent: "space-between", fontSize: "30px" }}>- {player} <button onClick={() => removePlayer(player)} style={{ fontSize: "10px", backgroundColor: "red" }}>remove</button></li>
         ))}
